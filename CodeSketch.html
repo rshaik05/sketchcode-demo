@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SketchCode - Visual Coding Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0e27;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #e4e4e7;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+            z-index: -2;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, #6366f1 2px, #6366f1 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, #6366f1 2px, #6366f1 4px);
+            background-size: 60px 60px;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .logo-section {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-text {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 24px;
+            color: #a1a1aa;
+            font-weight: 400;
+            margin-bottom: 40px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+
+        /* Vision Section */
+        .vision-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 80px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            z-index: -1;
+        }
+
+        .vision-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #f4f4f5;
+            text-align: center;
+        }
+
+        .vision-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #d4d4d8;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .highlight {
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #f4f4f5;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+        }
+
+        .old-way {
+            border-left: 4px solid #ef4444;
+        }
+
+        .new-way {
+            border-left: 4px solid #10b981;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .card-emoji {
+            font-size: 40px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f4f4f5;
+        }
+
+        .card-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 16px;
+            color: #d4d4d8;
+            line-height: 1.6;
+        }
+
+        .old-way .card-list li::before {
+            content: '✗';
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .new-way .card-list li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Features Section */
+        .features-section {
+            margin-bottom: 80px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #f4f4f5;
+        }
+
+        .feature-desc {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #a1a1aa;
+        }
+
+        /* Tech Stack */
+        .tech-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 80px;
+        }
+
+        .tech-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #f4f4f5;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .tech-tag {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #c7d2fe;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 60px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4);
+        }
+
+        .cta-title {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #6366f1;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-text {
+                font-size: 36px;
+            }
+            
+            .container {
+                padding: 40px 20px;
+            }
+
+            .vision-section, .tech-section {
+                padding: 30px;
+            }
+        }
+
+        /* Floating particles animation */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: float-particle 15s infinite ease-in-out;
+        }
+
+        @keyframes float-particle {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100vw, -100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+
+    <!-- Floating particles -->
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 6s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 9s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 12s;"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo-icon">✏️</div>
+                <div class="logo-text">SketchCode</div>
+            </div>
+            <div class="tagline">The Visual-First Coding Platform</div>
+            <span class="version-badge">LeetCode 2.0 | Built for Creative Minds</span>
+        </div>
+
+        <!-- Vision Section -->
+        <div class="vision-section">
+            <h2 class="vision-title">The Vision</h2>
+            <p class="vision-text">
+                SketchCode reimagines how developers learn and practice algorithms. 
+                Inspired by the frustration of grinding through <span class="highlight">repetitive LeetCode problems</span>, 
+                we're building a platform where <span class="highlight">visual thinking meets computational logic</span>. 
+                Draw your solutions, interact with data structures, and let AI bridge the gap 
+                between creative problem-solving and production-ready code.
+            </p>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="comparison-section">
+            <h2 class="section-title">The Evolution of Problem Solving</h2>
+            <div class="comparison-grid">
+                <div class="comparison-card old-way">
+                    <div class="card-header">
+                        <span class="card-emoji">😓</span>
+                        <h3 class="card-title">Traditional Platforms</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li>Text-heavy, intimidating interface</li>
+                        <li>Mechanical, repetitive problem sets</li>
+                        <li>No support for visual thinking</li>
+                        <li>Steep learning curve for beginners</li>
+                        <li>Burnout from monotonous grinding</li>
+                        <li>Disconnected from creative flow</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card new-way">
+                    <div class="card-header">
+                        <span class="card-emoji">🚀</span>
+                        <h3 class="card-title">SketchCode Approach</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li>Visual canvas for diagramming & sketching</li>
+                        <li>Gamified, creative problem-solving</li>
+                        <li>AI-powered visual-to-code translation</li>
+                        <li>Interactive algorithm animations</li>
+                        <li>Engaging, exploratory learning path</li>
+                        <li>Natural workflow for visual thinkers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2 class="section-title">Core Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Visual Canvas</h3>
+                    <p class="feature-desc">
+                        Sketch flowcharts, draw data structures, and diagram your approach. 
+                        Your whiteboard, digitized and intelligent.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI Code Translation</h3>
+                    <p class="feature-desc">
+                        Draw your solution logic and watch AI generate optimized code implementations 
+                        across multiple languages.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Live Algorithm Visualization</h3>
+                    <p class="feature-desc">
+                        Watch your code execute in real-time with animated data structure transformations 
+                        and step-by-step breakdowns.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Smart Problem Sets</h3>
+                    <p class="feature-desc">
+                        Adaptive difficulty that learns your style. Creative challenges designed 
+                        to build intuition, not just memorization.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3 class="feature-title">Gamified Progress</h3>
+                    <p class="feature-desc">
+                        Earn achievements for innovative solutions, unlock new visualization tools, 
+                        and compete in creative coding challenges.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">Multi-Modal Learning</h3>
+                    <p class="feature-desc">
+                        Switch seamlessly between visual, code, and explanation views. 
+                        Learn the way your brain works best.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="tech-section">
+            <h2 class="tech-title">Built With Modern Tech</h2>
+            <div class="tech-tags">
+                <span class="tech-tag">React / Next.js</span>
+                <span class="tech-tag">Canvas API / Three.js</span>
+                <span class="tech-tag">OpenAI GPT-4</span>
+                <span class="tech-tag">Python / FastAPI</span>
+                <span class="tech-tag">Monaco Editor</span>
+                <span class="tech-tag">D3.js Visualizations</span>
+                <span class="tech-tag">WebAssembly</span>
+                <span class="tech-tag">PostgreSQL</span>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <h2 class="cta-title">Make Problem-Solving Creative Again</h2>
+            <p class="cta-subtitle">
+                Join the movement from mechanical grinding to visual thinking
+            </p>
+            <a href="#" class="cta-button">Get Early Access</a>
+        </div>
+    </div>
+</body>
+</html>
